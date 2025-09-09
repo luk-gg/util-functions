@@ -1,13 +1,14 @@
-export function sortAlphabetically(data, key = null) {
-    return data.sort((a, b) => sortAlphabeticallyOnce(a, b, key));
+export function sortAlphabetically(data, key, options) {
+    return data.sort((a, b) => sortAlphabeticallyOnce(a, b, key, options));
 }
 
-export function sortAlphabeticallyOnce(a, b, key) {
-    if (key) {
-        if (a[key] < b[key]) return -1;
-        if (a[key] > b[key]) return 1;
-    }
-    if (a < b) return -1;
-    if (a > b) return 1;
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Collator/Collator
+export function sortAlphabeticallyOnce(a, b, key = null, options) {
+    const l = String(a[key] ?? a)
+    const r = String(b[key] ?? b)
+    if (options?.locale) return new Intl.Collator(options.locale, options).compare(l, r)
+    // return l.localeCompare(r)
+    if (l.toLowerCase() < r.toLowerCase()) return -1;
+    if (l.toLowerCase() > r.toLowerCase()) return 1;
     return 0;
 }
